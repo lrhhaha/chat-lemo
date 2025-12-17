@@ -2,7 +2,7 @@ import { DynamicStructuredTool } from '@langchain/core/tools';
 import { toolsConfig } from '../config/tools.config';
 import type { ToolConfig } from '../types/tool.types';
 import type { MultiServerMCPClient } from "@langchain/mcp-adapters";
-
+import leetCodeMCP from '../tools/mcp-leetcode.tool';
 
 /**
  * 将自定义工具配置转换为 LangChain Tool 格式
@@ -46,6 +46,9 @@ export async function createLangChainTools(
   // 工具数组
   const tools: DynamicStructuredTool[] = [];
 
+  const mcpTools = await leetCodeMCP.getTools()
+  tools.push(...mcpTools)
+
   for (const toolId of toolIds) {
     // 取出每个工具配置项
     const toolConfig = toolsConfig[toolId];
@@ -55,12 +58,7 @@ export async function createLangChainTools(
       continue;
     }
 
-    if (toolId.endsWith('_mcp')) {
-      // mcp
-      // const mcpTools = await (toolConfig as MultiServerMCPClient).getTools()
-      // tools.push(...mcpTools)
-      console.log(`已添加mcp工具：${toolId}`)
-    } else {
+
       // 自定义工具
       if (!(toolConfig as ToolConfig).enabled) {
         console.warn(`工具未启用: ${toolId}`);
@@ -70,7 +68,7 @@ export async function createLangChainTools(
       // 通过配置项创建工具
       tools.push(convertToLangChainTool(toolConfig as ToolConfig));
       console.log(`已添加工具: ${(toolConfig as ToolConfig).name}`);
-    }
+    
 
 
 

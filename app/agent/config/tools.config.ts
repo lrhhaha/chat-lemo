@@ -4,18 +4,17 @@ import { weatherTool } from '../tools/weather.tool';
 import { currentTimeTool } from '../tools/current-time.tool';
 import { searchTool } from '../tools/search.tool';
 import leetCodeMCP from '../tools/mcp-leetcode.tool';
-import type { MultiServerMCPClient } from "@langchain/mcp-adapters";
 
 // 重新导出 ToolConfig 类型，保持向后兼容
 export type { ToolConfig };
 
 // 基础工具配置
-export const toolsConfig: Record<string, ToolConfig<any> | MultiServerMCPClient> = {
+export const toolsConfig: Record<string, ToolConfig<any>> = {
   calculator: calculatorTool,
   weather: weatherTool,
   current_time: currentTimeTool,
   search: searchTool,
-  leetCode_mcp: leetCodeMCP
+  // leetCode_mcp: leetCodeMCP
 };
 
 // 环境配置

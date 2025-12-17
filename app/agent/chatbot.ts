@@ -33,7 +33,7 @@ async function createWorkflow(modelId?: string, toolIds?: string[]) {
 
   // 创建工具实例（toolIds为工具名称）
   const tools = await createLangChainTools(toolIds);
-
+  console.log('tools!!!!!!1', tools.forEach(it => it.name))
   // 绑定工具到模型
   const modelWithTools = tools.length > 0 ? model.bindTools(tools) : model;
 
@@ -134,7 +134,7 @@ export const getApp = async (modelId?: string, toolIds?: string[]) => {
 
   // 创建新的 workflow
   console.log('创建新的 workflow:', cacheKey);
-  const workflow = createWorkflow(modelId, toolIds);
+  const workflow = await createWorkflow(modelId, toolIds);
   const app = workflow.compile({ checkpointer });
 
   // 缓存 workflow（限制缓存大小）
