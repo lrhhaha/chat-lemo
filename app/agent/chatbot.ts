@@ -25,14 +25,14 @@ const workflowCache = new Map<string, ReturnType<typeof createWorkflow>>();
  * @param modelId 模型 ID
  * @param toolIds 工具 ID 列表
  */
-function createWorkflow(modelId?: string, toolIds?: string[]) {
+async function createWorkflow(modelId?: string, toolIds?: string[]) {
   console.log('创建 workflow - 模型:', modelId, '工具:', toolIds);
 
   // 创建模型实例
   const model = createModel(modelId);
 
-  // 创建工具实例
-  const tools = createLangChainTools(toolIds);
+  // 创建工具实例（toolIds为工具名称）
+  const tools = await createLangChainTools(toolIds);
 
   // 绑定工具到模型
   const modelWithTools = tools.length > 0 ? model.bindTools(tools) : model;

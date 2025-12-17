@@ -1,6 +1,8 @@
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import { toolsConfig } from '../config/tools.config';
 import type { ToolConfig } from '../types/tool.types';
+import type { MultiServerMCPClient } from "@langchain/mcp-adapters";
+
 
 /**
  * 将自定义工具配置转换为 LangChain Tool 格式
@@ -33,31 +35,46 @@ export function convertToLangChainTool(
  * @param toolIds 工具 ID 列表
  * @returns LangChain Tool 数组
  */
-export function createLangChainTools(
+export async function createLangChainTools(
   toolIds?: string[]
-): DynamicStructuredTool[] {
+): Promise<DynamicStructuredTool[]> {
   if (!toolIds || toolIds.length === 0) {
     console.log('未选择任何工具');
     return [];
   }
 
+  // 工具数组
   const tools: DynamicStructuredTool[] = [];
 
   for (const toolId of toolIds) {
+    // 取出每个工具配置项
     const toolConfig = toolsConfig[toolId];
 
     if (!toolConfig) {
-      console.warn(`工具配置不存在: ${toolId}`);
+      console.warn(`工具不存在: ${toolId}`);
       continue;
     }
 
-    if (!toolConfig.enabled) {
-      console.warn(`工具未启用: ${toolId}`);
-      continue;
+    if (toolId.endsWith('_mcp')) {
+      // mcp
+      // const mcpTools = await (toolConfig as MultiServerMCPClient).getTools()
+      // tools.push(...mcpTools)
+      console.log(`已添加mcp工具：${toolId}`)
+    } else {
+      // 自定义工具
+      if (!(toolConfig as ToolConfig).enabled) {
+        console.warn(`工具未启用: ${toolId}`);
+        continue;
+      }
+
+      // 通过配置项创建工具
+      tools.push(convertToLangChainTool(toolConfig as ToolConfig));
+      console.log(`已添加工具: ${(toolConfig as ToolConfig).name}`);
     }
 
-    tools.push(convertToLangChainTool(toolConfig));
-    console.log(`已添加工具: ${toolConfig.name}`);
+
+
+
   }
 
   console.log(`总共创建了 ${tools.length} 个工具`);
