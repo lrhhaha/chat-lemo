@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LangGraph Chat App",
+  title: "chat-lemo",
   description: "Chat application powered by LangGraph",
 };
 
