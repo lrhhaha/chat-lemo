@@ -16,7 +16,7 @@ import { getOrCreateThreadId } from '../utils/threadId'
  * 3. 用户可以切换到历史会话或创建新会话
  */
 export function useSessionManager() {
-  // 当前会话 ID,初始化时自动获取或创建
+  // 当前会话 ID,初始化时自动获取或创建 todo：页面初始化时，向后端发送请求创建threadId
   const [sessionId, setSessionId] = useState<string>(() => getOrCreateThreadId())
 
   // 标记当前会话是否已有用户消息(用于判断是否需要更新会话名)
@@ -79,12 +79,12 @@ export function useSessionManager() {
   }, [sessionId, hasUserMessage])
 
   return {
-    sessionId,
-    hasUserMessage,
+    sessionId, // 当前聊天sessionId
+    hasUserMessage, // 当前聊天是否有用户消息（有则证明聊天主题已经设置）
     setHasUserMessage,
-    sidebarRef,
-    createNewSession,
-    selectSession,
-    updateSessionName
+    sidebarRef, // 保存侧边栏的ref对象
+    createNewSession, // 更新当前threadId，并触发侧边栏重新获取数据并更新
+    selectSession, // 设置当前sessionId（侧边栏切换会话）
+    updateSessionName // 更新当前聊天的主题
   }
 }

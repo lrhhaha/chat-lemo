@@ -32,11 +32,17 @@ const SessionSidebar = forwardRef(function SessionSidebar(
         fetchSessions();
     }, [currentSessionId]);
 
+    /**
+     * 调用接口获取所有session信息
+     * 并将信息展示在侧边栏中
+     */
     async function fetchSessions() {
         try {
+            // 获取所有历史对话信息
             const res = await fetch('/api/chat/sessions');
             const data = await res.json();
             if (Array.isArray(data.sessions)) {
+                // 将历史对话信息渲染在侧边栏上
                 setSessions(data.sessions);
             }
         } catch {

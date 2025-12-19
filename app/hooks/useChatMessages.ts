@@ -197,7 +197,7 @@ export function useChatMessages() {
   }, [])
 
   /**
-   * 加载历史消息
+   * 加载历史消息（传入消息数组，更新页面）
    * 用于从服务器加载会话历史记录
    * @param historyMessages - 历史消息数组
    */
