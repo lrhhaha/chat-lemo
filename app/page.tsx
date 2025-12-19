@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useMemo, useState } from 'react'
+import { useRef, useMemo, useState, useEffect } from 'react'
 
 // 导入组件
 import SessionSidebar from './components/SessionSidebar'
@@ -163,6 +163,9 @@ export default function ChatPage() {
       chatInputRef.current.setInput(text)
     }
   }
+  useEffect(() => {
+    console.log('page', sessionId)
+  }, [sessionId])
 
   // ==================== 渲染 UI ====================
   return (

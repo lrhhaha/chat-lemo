@@ -29,6 +29,9 @@ const SessionSidebar = forwardRef(function SessionSidebar(
     useImperativeHandle(ref, () => ({ fetchSessions }), []);
 
     useEffect(() => {
+        // 第一次页面加载的时候，threadId为空，不要发送请求，（避免重复请求）
+        // useSessionManager会马上请求新的threadId
+        if (!currentSessionId) return;
         fetchSessions();
     }, [currentSessionId]);
 

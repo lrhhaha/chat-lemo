@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { getOrCreateThreadId } from '../utils/threadId'
 
 /**
@@ -17,7 +17,8 @@ import { getOrCreateThreadId } from '../utils/threadId'
  */
 export function useSessionManager() {
   // 当前会话 ID,初始化时自动获取或创建 todo：页面初始化时，向后端发送请求创建threadId
-  const [sessionId, setSessionId] = useState<string>(() => getOrCreateThreadId())
+  const [sessionId, setSessionId] = useState<string>('')
+  // const [sessionId, setSessionId] = useState<string>(() => getOrCreateThreadId())
 
   // 标记当前会话是否已有用户消息(用于判断是否需要更新会话名)
   const [hasUserMessage, setHasUserMessage] = useState(false)
@@ -36,7 +37,7 @@ export function useSessionManager() {
   const createNewSession = useCallback((id: string) => {
     setSessionId(id)           // 更新状态
     setHasUserMessage(false)   // 重置用户消息标记
-    sidebarRef.current?.fetchSessions?.()  // 刷新侧边栏
+    // sidebarRef.current?.fetchSessions?.()  // 刷新侧边栏
   }, [])
 
   /**
@@ -77,6 +78,31 @@ export function useSessionManager() {
       console.error('更新会话名称失败:', error)
     }
   }, [sessionId, hasUserMessage])
+
+  useEffect(() => {
+    console.log('useSessionManager', sessionId)
+  }, [sessionId])
+
+  const getInitialSessionId = async () => {
+    const data = await fetch('/api/chat/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: '' })
+    })
+    .then(res => res.json())
+
+    if (data.id) {
+      // 应该会联动的
+      // sessionId -> 自动获取所有历史对话信息
+      createNewSession(data.id)
+    }
+
+  }
+
+  // 第一次加载页面的时候，发送请求获取threadId
+  useEffect(() => {
+    getInitialSessionId()
+  }, [])
 
   return {
     sessionId, // 当前聊天sessionId
