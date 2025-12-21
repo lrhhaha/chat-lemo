@@ -35,7 +35,11 @@ export function useChatHistory(
    * @param threadId - 要加载的会话 ID
    */
   const loadHistory = useCallback(async (threadId: string) => {
-    if (!threadId) return;
+    if (!threadId) {
+      onLoadMessages([])
+      onHasUserMessage(false)
+      return
+    }
     console.log('%c 开始加载历史', 'color:#2196F3; font-weight:bold', { threadId })
 
     try {

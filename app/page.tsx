@@ -122,7 +122,8 @@ export default function ChatPage() {
     loadMessages,          // 加载历史消息（传入消息列表，展现在页面上）
     updateToolCalls,       // 更新工具调用
     updateToolResult,      // 更新工具执行结果
-    updateToolError        // 更新工具执行错误
+    updateToolError,        // 更新工具执行错误
+    addToolCall
   } = useChatMessages()
 
   // ==================== 会话管理 ====================
@@ -132,7 +133,6 @@ export default function ChatPage() {
     sidebarRef,            // 侧边栏组件引用
     createNewSession,      // 创建新会话
     selectSession,         // 切换会话
-    updateSessionName,     // 更新会话名称（会话名称为历史对话的用户的第一句）
     setHasUserMessage      // 设置是否有用户消息(用于判断是否需要更新会话名)
   } = useSessionManager()
 
@@ -151,10 +151,11 @@ export default function ChatPage() {
     updateMessageContent,
     finishStreaming,
     addErrorMessage,
-    updateSessionName,
+    createNewSession,
     updateToolCalls,
     updateToolResult,
-    updateToolError
+    updateToolError,
+    addToolCall
   })
 
   // 处理建议点击

@@ -12,7 +12,7 @@ interface UseSendMessageParams {
   updateMessageContent: (id: string, content: string) => void  // 更新消息内容
   finishStreaming: (id: string) => void                // 完成流式传输
   addErrorMessage: () => void                          // 添加错误消息
-  updateSessionName: (name: string) => void            // 更新会话名称
+  createNewSession: (id?: string) => void              // 创建/设置新会话
   updateToolCalls: (messageId: string, toolCalls: ToolCall[]) => void  // 更新工具调用
   addToolCall: (messageId: string, toolCall: ToolCall) => void  // 添加工具调用
   updateToolResult: (messageId: string, toolName: string, output: any) => void  // 更新工具结果
@@ -41,7 +41,7 @@ export function useSendMessage({
   updateMessageContent,
   finishStreaming,
   addErrorMessage,
-  updateSessionName,
+  createNewSession,
   updateToolCalls,
   addToolCall,
   updateToolResult,
@@ -71,6 +71,7 @@ export function useSendMessage({
     images?: File[]
   ) => {
     setIsLoading(true)
+    const isNewSession = !sessionId
 
     try {
       // 1. 处理图片：转换为 base64
@@ -130,7 +131,9 @@ export function useSendMessage({
       }
 
       // 3. 更新会话名称(首次消息)
-      updateSessionName(input)
+      // if (!isNewSession) {
+      //   updateSessionName(input)
+      // }
 
       // 4. 创建 AI 消息占位符
       const assistantMessage = addAssistantMessage()
@@ -187,6 +190,10 @@ export function useSendMessage({
               }
               // 流结束
               else if (data.type === 'end') {
+                if (isNewSession && data.thread_id) {
+                  createNewSession(data.thread_id)
+                  // updateSessionName(input, data.thread_id)
+                }
                 // 从最终消息中提取工具调用信息(如果有)
                 if (data.message && data.message.tool_calls) {
                   console.log('从最终消息中提取工具调用:', data.message.tool_calls)
@@ -222,7 +229,8 @@ export function useSendMessage({
     updateMessageContent,
     finishStreaming,
     addErrorMessage,
-    updateSessionName,
+    // updateSessionName,
+    createNewSession,
     updateToolCalls,
     updateToolResult,
     updateToolError

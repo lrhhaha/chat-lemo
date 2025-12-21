@@ -2,6 +2,7 @@ import '../../utils/loadEnv';
 import { NextRequest, NextResponse } from 'next/server';
 import { HumanMessage, mapStoredMessageToChatMessage, mapStoredMessagesToChatMessages } from '@langchain/core/messages';
 import { getApp } from '@/app/agent/chatbot';
+import { createSession, updateSessionName } from '@/app/agent/db';
 
 // 引入uuid生成器
 import { randomUUID } from 'crypto';
@@ -48,10 +49,38 @@ export async function POST(request: NextRequest) {
     } else {
       return NextResponse.json({ error: '无效的消息格式' }, { status: 400 });
     }
+
+    const isNewSession = !thread_id
     // 优先使用前端传入的thread_id，否则自动生成
     const threadId =
       typeof thread_id === 'string' && thread_id ? thread_id : randomUUID();
     const threadConfig = { configurable: { thread_id: threadId } };
+
+    // 如果是新会话，在数据库中创建会话记录
+    if (isNewSession) {
+      // 提取用户消息的文本内容作为会话名称
+      let sessionName = '新会话';
+      if (typeof message === 'string') {
+        sessionName = message || '新会话';
+      } else if (Array.isArray(message)) {
+        // 从多模态内容中提取文本
+        const textContent = message.find(item => item.type === 'text');
+        sessionName = textContent?.text || '新会话';
+      } else if (typeof message === 'object' && message !== null) {
+        // 从消息对象中提取文本
+        const content = message.content || message.kwargs?.content;
+        if (typeof content === 'string') {
+          sessionName = content || '新会话';
+        } else if (Array.isArray(content)) {
+          const textContent = content.find(item => item.type === 'text');
+          sessionName = textContent?.text || '新会话';
+        }
+      }
+
+      // 创建会话，使用用户消息作为名称（默认为"新会话"）
+      createSession(threadId, sessionName);
+    }
+
 
     // 创建流式响应
     const stream = new ReadableStream({
@@ -62,7 +91,7 @@ export async function POST(request: NextRequest) {
 
           let completeMessage = null;
 
-          // 参考 demo，使用 streamEvents 获取流式响应
+          // 使用 streamEvents 获取流式响应
           for await (const event of app.streamEvents(
             { messages: [userMessage] },
             { version: 'v2', ...threadConfig }

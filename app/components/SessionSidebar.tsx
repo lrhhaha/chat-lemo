@@ -10,7 +10,7 @@ interface Session {
 interface SessionSidebarProps {
     currentSessionId: string;
     onSelect: (id: string) => void;
-    onNew: (id: string) => void;
+    onNew: (id?: string) => void;
 }
 
 // Rename function (helper)
@@ -29,11 +29,8 @@ const SessionSidebar = forwardRef(function SessionSidebar(
     useImperativeHandle(ref, () => ({ fetchSessions }), []);
 
     useEffect(() => {
-        // 第一次页面加载的时候，threadId为空，不要发送请求，（避免重复请求）
-        // useSessionManager会马上请求新的threadId
-        if (!currentSessionId) return;
         fetchSessions();
-    }, [currentSessionId]);
+    }, []);
 
     /**
      * 调用接口获取所有session信息
@@ -54,16 +51,7 @@ const SessionSidebar = forwardRef(function SessionSidebar(
     }
 
     async function handleNew() {
-        const res = await fetch('/api/chat/sessions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: '' })
-        });
-        const data = await res.json();
-        if (data.id) {
-            onNew(data.id);
-            fetchSessions();
-        }
+        onNew();
     }
 
     async function handleDelete(id: string, e: React.MouseEvent) {
