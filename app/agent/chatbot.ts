@@ -34,7 +34,7 @@ async function createWorkflow(modelId?: string, toolIds?: string[]) {
 
   // 创建工具实例（toolIds为工具名称）
   const tools = await createLangChainTools(toolIds);
-  console.log('tools!!!!!!1', tools.map(it => it.name))
+  // console.log('tools!!!!!!1', tools.map(it => it.name))
   // 绑定工具到模型
   const modelWithTools = tools.length > 0 ? model.bindTools(tools) : model;
 
@@ -59,6 +59,7 @@ async function createWorkflow(modelId?: string, toolIds?: string[]) {
     // 检查最后一条消息是否包含 tool_calls
     if (lastMessage && lastMessage._getType() === 'ai') {
       const aiMessage = lastMessage as AIMessage;
+      // console.log('???', aiMessage)
       if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
         console.log('检测到工具调用:', aiMessage.tool_calls.length, '个工具');
         return 'tools';
@@ -74,7 +75,7 @@ async function createWorkflow(modelId?: string, toolIds?: string[]) {
     .addNode('chatbot', chatbotNode);
 
   // 如果有工具，添加工具节点和条件路由
-  if (tools.length === 0) {
+  if (tools.length > 0) {
     const toolNode = new ToolNode(tools);
     workflow
       .addNode('tools', toolNode)
