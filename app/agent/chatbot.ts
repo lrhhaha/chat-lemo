@@ -42,8 +42,9 @@ async function createWorkflow(modelId?: string, toolIds?: string[]) {
   async function chatbotNode(state: typeof MessagesAnnotation.State) {
 
     try {
+      // 此处会进行流式输出，即整个await期间会一直进行流式输出
       const response = await modelWithTools.invoke(state.messages);
-      console.log('模型响应成功，类型:', response._getType?.());
+      console.log('模型响应成功，类型:', response);
       return { messages: [response] };
     } catch (error) {
       console.error('chatbotNode 错误详情:', error);

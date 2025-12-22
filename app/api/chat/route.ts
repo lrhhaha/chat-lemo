@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
     if (typeof message === 'string') {
       // 字符串格式：创建 HumanMessage
       userMessage = new HumanMessage(message);
+      console.log('userMessage', userMessage)
     } else if (Array.isArray(message)) {
       // 数组格式：多模态内容（文本 + 图片）
       userMessage = new HumanMessage({
@@ -97,6 +98,8 @@ export async function POST(request: NextRequest) {
             { version: 'v2', ...threadConfig }
           )) {
             if (event.event === 'on_chat_model_stream') {
+              // 每个chunk就是一个完整的AIMessage格式数据。
+              // 但是发送给前端无需全部发送，先过滤出LLM输出的content字段尽心发送
               const chunk = event.data?.chunk;
               if (chunk?.content) {
                 // 发送内容片段（保持现有的流式体验）
@@ -110,9 +113,10 @@ export async function POST(request: NextRequest) {
               // 保存完整的消息对象（用于最后发送）
               completeMessage = chunk;
             }
-            // 捕获工具调用开始事件
+            // 每个chatModel的流式输出完毕后，一个“总结性”事件
             else if (event.event === 'on_chat_model_end') {
               const output = event.data?.output;
+              console.log('on_chat_model_end', output)
               if (output?.tool_calls && output.tool_calls.length > 0) {
                 // 透传原始 tool_calls 数据，避免字段丢失
                 const toolCallData = JSON.stringify({
@@ -143,7 +147,7 @@ export async function POST(request: NextRequest) {
               controller.enqueue(new TextEncoder().encode(toolErrorData));
             }
           }
-
+          console.log('================')
           // 获取最终状态，包含完整的消息历史
           const finalState = await app.getState(threadConfig);
           const allMessages = finalState?.values?.messages || [];
