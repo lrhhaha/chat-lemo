@@ -10,7 +10,6 @@ import { SqliteSaver } from '@langchain/langgraph-checkpoint-sqlite';
 import { ToolNode } from '@langchain/langgraph/prebuilt';
 import path from 'path';
 import Database from 'better-sqlite3';
-import { initSessionTable } from './db';
 import { createModel } from './utils/models';
 import { createLangChainTools } from './utils/tools';
 
@@ -100,10 +99,7 @@ let checkpointer: SqliteSaver;
 export const getCheckpointer = () => {
   if (!checkpointer) {
     // 创建 SQLite 检查点保存器
-    console.log('初始化 SqliteSaver，数据库路径:', dbPath);
     try {
-      // 初始化自定义 sessions 表
-      initSessionTable();
       checkpointer = new SqliteSaver(db);
       console.log('SqliteSaver 初始化成功');
     } catch (error) {

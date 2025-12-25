@@ -5,13 +5,14 @@ const dbPath = path.resolve(process.cwd(), 'chat_history.db');
 const db = new Database(dbPath);
 
 // 初始化 sessions 表
-export function initSessionTable() {
+function initSessionTable() {
     db.prepare(`CREATE TABLE IF NOT EXISTS sessions (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`).run();
+        id TEXT PRIMARY KEY,
+        name TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`).run();
 }
+initSessionTable()
 
 export function createSession(id: string, name: string) {
     db.prepare('INSERT INTO sessions (id, name) VALUES (?, ?)').run(id, name);
