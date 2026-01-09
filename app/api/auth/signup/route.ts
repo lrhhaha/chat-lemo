@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { authService } from '@/app/services/auth.service';
+import { authService } from '@/app/backend/services/auth.service';
 
 /**
  * 用户注册 API

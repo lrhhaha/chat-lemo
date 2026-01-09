@@ -18,7 +18,7 @@ import { useChatHistory } from './hooks/useChatHistory'
 import { useSendMessage } from './hooks/useSendMessage'
 
 // 导入工具配置
-import { toolsConfig } from './agent/config/tools.config'
+import { toolsConfig } from './backend/agent/config/tools.config'
 
 /**
  * 聊天页面主组件
