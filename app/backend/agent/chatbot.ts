@@ -1,4 +1,4 @@
-import '../utils/loadEnv';
+import '../../utils/loadEnv';
 import {
   StateGraph,
   MessagesAnnotation,

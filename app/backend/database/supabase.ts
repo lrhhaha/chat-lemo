@@ -8,4 +8,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('缺少 Supabase 环境变量');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: { flowType: 'pkce'}
+});

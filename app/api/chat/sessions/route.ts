@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAllSessions, createSession, deleteSession, updateSessionName } from '@/app/agent/db';
+import { getAllSessions, createSession, deleteSession, updateSessionName } from '@/app/backend/agent/db';
 import { randomUUID } from 'crypto';
 
 export async function GET() {

@@ -1,8 +1,8 @@
 import '../../utils/loadEnv';
 import { NextRequest, NextResponse } from 'next/server';
 import { HumanMessage, mapStoredMessageToChatMessage, mapStoredMessagesToChatMessages } from '@langchain/core/messages';
-import { getApp } from '@/app/agent/chatbot';
-import { createSession, updateSessionName } from '@/app/agent/db';
+import { getApp } from '@/app/backend/agent/chatbot';
+import { createSession, updateSessionName } from '@/app/backend/agent/db';
 
 // 引入uuid生成器
 import { randomUUID } from 'crypto';
