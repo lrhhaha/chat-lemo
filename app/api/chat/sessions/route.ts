@@ -1,10 +1,18 @@
-import { NextResponse } from 'next/server';
+// import { NextResponse } from 'next/server';
 import { getAllSessions, createSession, deleteSession, updateSessionName } from '@/app/backend/agent/db';
 import { randomUUID } from 'crypto';
+import { NextRequest, NextResponse } from 'next/server';
+import { sessionService } from '@/app/backend/services/session.service';
+import { withAuth } from '@/app/backend/middleware/auth';
 
-export async function GET() {
+/**
+ * GET /api/chat/sessions
+ * 获取当前用户的所有会话列表
+ */
+export const GET = withAuth(async (request: NextRequest, auth) => {
   try {
-    const sessions = getAllSessions();
+    // 使用认证客户端获取会话列表
+    const sessions = await sessionService.getAllSessions(auth.client);
     return NextResponse.json({ sessions });
   } catch (e) {
     return NextResponse.json(
@@ -12,7 +20,19 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+});
+
+// export async function GET() {
+//   try {
+//     const sessions = getAllSessions();
+//     return NextResponse.json({ sessions });
+//   } catch (e) {
+//     return NextResponse.json(
+//       { error: '获取会话列表失败', detail: String(e) },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 export async function POST(request: Request) {
   try {

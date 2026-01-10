@@ -32,6 +32,7 @@ export async function createSession(
 }
 
 export async function getAllSessions(client?: SupabaseClient): Promise<SessionRow[]> {
+  // 传入supabase客户端是为了使用携带auth认证的客户端，以便通过RLS策略
   const db = client || supabase;
   const { data, error } = await db
     .from('sessions')
