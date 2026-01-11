@@ -1,4 +1,4 @@
-import { signUpWithEmail, exchangeCodeForSession } from "../database/auth";
+import { signUpWithEmail, exchangeCodeForSession, signInWithPassword } from "../database/auth";
 
 export class AuthService {
   // 查询当前 token 对应的用户信息
@@ -7,9 +7,9 @@ export class AuthService {
   // }
 
   // 邮箱 + 密码登录
-  // async signIn(email: string, password: string) {
-  //   return signInWithPassword(email, password);
-  // }
+  async signIn(email: string, password: string) {
+    return signInWithPassword(email, password);
+  }
 
   // 邮箱注册并写入用户 metadata
   async signUp(email: string, password: string, name: string, redirectTo: string) {

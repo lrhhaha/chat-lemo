@@ -2,8 +2,12 @@
 
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import Link from 'next/link'
+import { useRouter} from 'next/navigation'
+import { email } from 'zod'
+import { PassThrough } from 'stream'
 
 export default function SigninPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -17,8 +21,22 @@ export default function SigninPage() {
     }))
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    try {
+      const res = await fetch('/api/auth/signin', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      })
+      const data = await res.json() as any;
+      if (data.message === '登录成功') router.push('/')
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   return (

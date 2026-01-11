@@ -1,5 +1,6 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { MessageSquare, Plus, Trash2, Edit2, Zap, User } from 'lucide-react';
+import { useRouter } from 'next/navigation'
 
 interface Session {
     id: string;
@@ -22,6 +23,7 @@ const SessionSidebar = forwardRef(function SessionSidebar(
     { currentSessionId, onSelect, onNew }: SessionSidebarProps,
     ref
 ) {
+    const router = useRouter();
     const [sessions, setSessions] = useState<Session[]>([]);
     const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
     const [newSessionName, setNewSessionName] = useState('');
@@ -40,13 +42,14 @@ const SessionSidebar = forwardRef(function SessionSidebar(
         try {
             // 获取所有历史对话信息
             const res = await fetch('/api/chat/sessions');
+            if (res.status === 401) router.push('/signin');
             const data = await res.json();
             if (Array.isArray(data.sessions)) {
                 // 将历史对话信息渲染在侧边栏上
                 setSessions(data.sessions);
             }
-        } catch {
-            // ignore
+        } catch (e) {
+            console.log('??',e)
         }
     }
 

@@ -23,3 +23,8 @@ export function signUpWithEmail(
 export async function exchangeCodeForSession(code: string) {
   return supabase.auth.exchangeCodeForSession(code);
 }
+
+// 邮箱 + 密码登录
+export async function signInWithPassword(email: string, password: string) {
+  return supabase.auth.signInWithPassword({ email, password });
+}
