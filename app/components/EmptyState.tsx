@@ -1,9 +1,7 @@
 'use client'
 
-import { Network, Atom, Sparkles } from 'lucide-react'
+import { Network, Atom, Bot, Sparkles } from 'lucide-react'
 
-// Demo feature cards actions could be passed as props or just mocked for now
-// The user might want these buttons to populate the input.
 interface EmptyStateProps {
     onAction?: (text: string) => void;
 }
@@ -11,49 +9,52 @@ interface EmptyStateProps {
 export function EmptyState({ onAction }: EmptyStateProps) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center animate-fade-in-up w-full max-w-5xl mx-auto px-4 py-12">
-      {/* AI Core Animation */}
-      <div className="mb-10 relative w-[120px] h-[120px] flex items-center justify-center">
-        <div className="absolute rounded-full border-2 border-transparent border-t-blue-500 border-r-purple-500 w-full h-full opacity-70 animate-spin-slow"></div>
-        <div className="absolute rounded-full border-2 border-transparent border-t-cyan-500 border-l-blue-500 w-[70%] h-[70%] animate-spin-reverse"></div>
-        <div className="w-[40px] h-[40px] rounded-full bg-radial-gradient from-white to-transparent opacity-80 filter blur-[10px] animate-pulse-glow bg-white"></div>
-        {/* Fallback glow if radial gradient fails in CSS classes or just use simple bg */}
-        <div className="absolute w-10 h-10 bg-blue-400 rounded-full blur-xl animate-pulse opacity-50"></div>
+      
+      <div className="mb-8 relative group">
+        <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+        <div className="relative w-24 h-24 bg-bg-component rounded-full shadow-elevated flex items-center justify-center border border-border-secondary">
+           <Bot className="w-12 h-12 text-primary" strokeWidth={1.5} />
+        </div>
+        <div className="absolute -top-2 -right-2 bg-bg-component p-1.5 rounded-full shadow-sm border border-border-secondary animate-bounce delay-100">
+            <Sparkles className="w-5 h-5 text-warning" fill="currentColor" fillOpacity={0.2} />
+        </div>
       </div>
 
-      <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-        <span className="text-white">解锁</span>
-        <span className="text-gradient px-2">AI 智能编程</span>
-        <span className="text-white">新体验</span>
+      <h1 className="text-3xl md:text-4xl font-semibold mb-4 tracking-tight text-text-main">
+        欢迎使用 <span className="text-primary">LangGraph</span> 智能助手
       </h1>
-      <p className="text-slate-400 max-w-lg text-lg mb-12 leading-relaxed font-light">
-        利用下一代神经网络模型，为您提供<span className="text-blue-400 font-medium">代码生成</span>、<span className="text-purple-400 font-medium">架构分析</span>与<span className="text-cyan-400 font-medium">智能调试</span>服务。
+      <p className="text-text-secondary max-w-lg text-lg mb-12 leading-relaxed">
+        基于下一代 AI 模型，为您提供
+        <span className="text-text-main font-medium mx-1">代码生成</span>、
+        <span className="text-text-main font-medium mx-1">架构分析</span>与
+        <span className="text-text-main font-medium mx-1">智能调试</span>
+        服务。
       </p>
 
-      {/* Feature Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl w-full px-4 text-left">
         <button 
            onClick={() => onAction?.('如何学习LangGraph JS')}
-           className="bg-white/5 border border-white/5 hover:bg-white/10 hover:border-blue-500/40 p-5 rounded-2xl flex items-start text-left gap-4 transition-all hover:-translate-y-1 hover:shadow-lg group"
+           className="group bg-bg-component border border-border-secondary hover:border-primary p-6 rounded-lg flex items-start text-left gap-4 transition-all hover:shadow-card cursor-pointer"
         >
-          <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-            <Network className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-lg bg-primary-bg flex items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
+            <Network className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-slate-200 font-semibold mb-1 group-hover:text-blue-300 transition-colors">LangGraph 学习路径</div>
-            <div className="text-slate-500 text-sm leading-snug">掌握 StateGraph、Nodes 与 Edges 的核心概念，构建 Agent。</div>
+            <div className="text-text-main font-medium text-base mb-1 group-hover:text-primary transition-colors">LangGraph 学习路径</div>
+            <div className="text-text-secondary text-sm leading-relaxed">掌握 StateGraph、Nodes 与 Edges 的核心概念，构建强大的 Agent 应用。</div>
           </div>
         </button>
 
         <button 
            onClick={() => onAction?.('分析这个 React 组件的性能瓶颈')}
-           className="bg-white/5 border border-white/5 hover:bg-white/10 hover:border-cyan-500/40 p-5 rounded-2xl flex items-start text-left gap-4 transition-all hover:-translate-y-1 hover:shadow-lg group"
+           className="group bg-bg-component border border-border-secondary hover:border-primary p-6 rounded-lg flex items-start text-left gap-4 transition-all hover:shadow-card cursor-pointer"
         >
-          <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
-            <Atom className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-lg bg-primary-bg flex items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
+            <Atom className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-slate-200 font-semibold mb-1 group-hover:text-cyan-300 transition-colors">React 性能优化</div>
-            <div className="text-slate-500 text-sm leading-snug">智能分析组件渲染逻辑，提供 useMemo 优化建议。</div>
+            <div className="text-text-main font-medium text-base mb-1 group-hover:text-primary transition-colors">React 性能优化</div>
+            <div className="text-text-secondary text-sm leading-relaxed">智能分析组件渲染逻辑，提供 useMemo 和 useCallback 优化建议。</div>
           </div>
         </button>
       </div>
