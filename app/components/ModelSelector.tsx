@@ -57,8 +57,8 @@ export default function ModelSelector({
         onClick={() => setIsOpen(!isOpen)}
         className="
           flex items-center gap-1.5 px-3 py-2
-          text-slate-300 text-sm
-          hover:bg-white/5 rounded-lg
+          text-text-secondary text-sm
+          hover:bg-black/5 dark:hover:bg-white/5 rounded-lg
           transition-all duration-200
         "
         title="选择模型"
@@ -76,16 +76,16 @@ export default function ModelSelector({
         <div
           className="
             absolute bottom-full left-0 mb-2 w-64
-            bg-slate-900/95 backdrop-blur-xl
-            border border-white/10
-            rounded-xl shadow-2xl
+            bg-bg-elevated backdrop-blur-xl
+            border border-border-secondary
+            rounded-xl shadow-elevated
             overflow-hidden
             animate-in slide-in-from-bottom-2 duration-200
           "
         >
           {/* 标题 */}
-          <div className="px-4 py-3 border-b border-white/10">
-            <h3 className="text-sm font-semibold text-white">
+          <div className="px-4 py-3 border-b border-border-secondary">
+            <h3 className="text-sm font-semibold text-text-main">
               选择模型
             </h3>
           </div>
@@ -102,8 +102,8 @@ export default function ModelSelector({
                   className={`
                     w-full px-4 py-3 text-left
                     transition-colors duration-150
-                    hover:bg-white/5
-                    ${isSelected ? 'bg-blue-500/20' : ''}
+                    hover:bg-black/5 dark:hover:bg-white/5
+                    ${isSelected ? 'bg-primary/10' : ''}
                   `}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -113,15 +113,15 @@ export default function ModelSelector({
                           text-sm font-medium
                           ${
                             isSelected
-                              ? 'text-blue-400'
-                              : 'text-white'
+                              ? 'text-primary'
+                              : 'text-text-main'
                           }
                         `}
                       >
                         {model.name}
                       </div>
                       {model.description && (
-                        <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                        <p className="text-xs text-text-secondary mt-1 line-clamp-2">
                           {model.description}
                         </p>
                       )}
@@ -130,7 +130,7 @@ export default function ModelSelector({
                     {/* 选中标记 */}
                     {isSelected && (
                       <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                        <div className="w-2 h-2 bg-primary rounded-full" />
                       </div>
                     )}
                   </div>

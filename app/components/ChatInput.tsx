@@ -137,10 +137,10 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
 
     return (
       <div
-        className={`w-full max-w-5xl glass-panel rounded-2xl shadow-2xl shadow-black/50 transition-all duration-300 ${
+        className={`w-full max-w-5xl bg-bg-component border border-border-secondary rounded-xl shadow-elevated transition-all duration-300 ${
           disabled
-            ? 'ring-1 ring-yellow-500/30 shadow-[0_0_30px_rgba(234,179,8,0.15)]'
-            : 'focus-within:ring-1 focus-within:ring-blue-500/50 focus-within:shadow-[0_0_40px_rgba(59,130,246,0.2)]'
+            ? 'opacity-60 cursor-not-allowed'
+            : 'focus-within:border-primary focus-within:shadow-lg'
         }`}
       >
         {/* 输入框区域 */}
@@ -152,7 +152,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
                 {imagePreviews.map((preview, index) => (
                   <div
                     key={index}
-                    className="relative group w-20 h-20 rounded-lg overflow-hidden border border-white/10"
+                    className="relative group w-20 h-20 rounded-lg overflow-hidden border border-border-secondary"
                   >
                     <img
                       src={preview}
@@ -184,8 +184,8 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={disabled ? 'AI 正在回复中...' : '输入您的问题，开启 AI 之旅...'}
-            className={`w-full bg-transparent border-none outline-none text-slate-200 text-base resize-none max-h-32 transition-opacity ${
-              disabled ? 'placeholder-yellow-400/60 opacity-60' : 'placeholder-slate-500'
+            className={`w-full bg-transparent border-none outline-none text-text-main text-base resize-none max-h-32 transition-opacity ${
+              disabled ? 'placeholder-text-quaternary' : 'placeholder-text-tertiary'
             }`}
             rows={1}
             disabled={disabled}
@@ -203,19 +203,19 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
         />
 
         {/* 工具栏 */}
-        <div className="flex items-center justify-between px-3 pb-3 pt-1 border-t border-white/5">
+        <div className="flex items-center justify-between px-3 pb-3 pt-1 border-t border-border-split">
           {/* 左侧：附件、工具选择器和已选工具徽章 */}
           <div className="flex items-center gap-2 flex-1 min-w-0">
             {/* 附件/图片上传按钮 */}
             <button
               onClick={handleAddClick}
-              className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition flex-shrink-0 relative group"
+              className="p-2 text-text-tertiary hover:text-primary hover:bg-primary-bg rounded-lg transition flex-shrink-0 relative group"
               disabled={disabled}
               title="上传图片"
             >
               <Plus className="w-5 h-5" />
               {uploadedImages.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 text-white text-[10px] rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-white text-[10px] rounded-full flex items-center justify-center">
                   {uploadedImages.length}
                 </span>
               )}
@@ -265,12 +265,12 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
             <button
               onClick={handleSend}
               disabled={(!input.trim() && uploadedImages.length === 0) || disabled}
-              className={`p-2 rounded-lg shadow-lg transition-all min-w-10 min-h-10 flex items-center justify-center ${
+              className={`p-2 rounded-lg shadow-sm transition-all min-w-10 min-h-10 flex items-center justify-center ${
                 disabled
-                  ? 'bg-yellow-600/20 text-yellow-400 cursor-wait'
+                  ? 'bg-bg-elevated text-text-quaternary cursor-wait border border-border-secondary'
                   : (input.trim() || uploadedImages.length > 0)
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white shadow-blue-600/20 active:scale-95'
-                    : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                    ? 'bg-primary hover:bg-primary-hover text-white shadow-primary/20 active:scale-95'
+                    : 'bg-bg-elevated text-text-tertiary border border-border-secondary cursor-not-allowed'
               }`}
             >
               {disabled ? (

@@ -1,5 +1,7 @@
+'use client'
+
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
-import { MessageSquare, Plus, Trash2, Edit2, Zap, User } from 'lucide-react';
+import { Plus, Trash2, Edit2, Zap, User, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation'
 
 interface Session {
@@ -14,7 +16,6 @@ interface SessionSidebarProps {
     onNew: (id?: string) => void;
 }
 
-// Rename function (helper)
 function getSessionTitle(session: Session) {
     return session.name || `会话 ${session.id.slice(0, 8)}`;
 }
@@ -49,7 +50,7 @@ const SessionSidebar = forwardRef(function SessionSidebar(
                 setSessions(data.sessions);
             }
         } catch (e) {
-            console.log('??',e)
+            console.log('Error fetching sessions:', e)
         }
     }
 
@@ -67,7 +68,6 @@ const SessionSidebar = forwardRef(function SessionSidebar(
             body: JSON.stringify({ id })
         });
         fetchSessions();
-        // If current session deleted, might want to redirect or clear (parent specific)
     }
 
     function handleRename(id: string, currentName: string, e: React.MouseEvent) {
@@ -101,46 +101,46 @@ const SessionSidebar = forwardRef(function SessionSidebar(
     }
 
     return (
-        <aside className="w-64 glass-panel flex flex-col h-full z-20 relative border-r-0 hidden md:flex">
+        <aside className="w-64 bg-bg-component border-r border-border-secondary flex flex-col h-full z-20 relative hidden md:flex">
             {/* Logo */}
             <div className="p-6 flex items-center gap-3">
-                <div className="w-8 h-8 rounded bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center shadow-md shadow-primary/20">
                     <Zap className="text-white w-4 h-4" />
                 </div>
-                <span className="font-bold text-lg tracking-tight text-white">ChatAPP<span className="text-blue-400 text-xs align-top ml-1">AI</span></span>
+                <span className="font-bold text-lg tracking-tight text-text-main">ChatAPP<span className="text-primary text-xs align-top ml-1">AI</span></span>
             </div>
 
             <div className="px-4 mb-6">
                 <button 
                     onClick={handleNew}
-                    className="w-full py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-200 font-medium transition-all flex items-center justify-center gap-2 group"
+                    className="w-full py-3 px-4 rounded-lg bg-primary text-white font-medium shadow-sm hover:bg-primary-hover transition-all flex items-center justify-center gap-2 group"
                 >
-                    <Plus className="w-4 h-4 text-blue-400 group-hover:rotate-90 transition-transform" />
+                    <Plus className="w-4 h-4 text-white group-hover:rotate-90 transition-transform" />
                     <span>新建对话</span>
                 </button>
             </div>
 
             <div className="flex-1 overflow-y-auto px-3 scrollbar-hide">
-                <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-3 px-3">历史记录</div>
+                <div className="text-xs font-semibold text-text-tertiary uppercase tracking-wider mb-3 px-3">历史记录</div>
                 <div>
                     {sessions.length === 0 ? (
-                         <div className="p-4 text-center text-slate-500 text-xs italic">
+                         <div className="p-4 text-center text-text-tertiary text-xs italic">
                             暂无历史会话
                         </div>
                     ) : (
                         sessions.map((session) => (
                             <div
                                 key={session.id}
-                                className={`group flex items-center gap-3 py-1 px-2 rounded-lg cursor-pointer transition-colors relative ${
+                                className={`group flex items-center gap-3 py-2 px-3 rounded-md cursor-pointer transition-colors relative mb-1 ${
                                     currentSessionId === session.id
-                                        ? 'bg-white/10 text-slate-200 shadow-sm border border-white/5'
-                                        : 'hover:bg-white/5 text-slate-400 hover:text-slate-200 border border-transparent'
+                                        ? 'bg-primary-bg dark:bg-primary/20 text-primary font-medium'
+                                        : 'hover:bg-black/5 dark:hover:bg-white/5 text-text-secondary hover:text-text-main'
                                 }`}
                                 onClick={() => onSelect(session.id)}
                             >
-                                <div className={`w-1 h-8 rounded-full absolute left-0 transition-all duration-300 ${
-                                    currentSessionId === session.id ? 'bg-blue-500 opacity-100' : 'bg-transparent opacity-0'
-                                }`} />
+                                {currentSessionId === session.id && (
+                                    <div className="w-1 h-5 bg-primary rounded-full absolute left-0.5" />
+                                )}
 
                                 {editingSessionId === session.id ? (
                                     <input
@@ -149,27 +149,26 @@ const SessionSidebar = forwardRef(function SessionSidebar(
                                         onChange={(e) => setNewSessionName(e.target.value)}
                                         onBlur={() => saveRename(session.id)}
                                         onKeyDown={(e) => handleRenameKeyDown(e, session.id)}
-                                        className="flex-1 bg-black/20 text-white text-sm rounded px-2 py-1 outline-none border border-blue-500/50 min-w-0"
+                                        className="flex-1 bg-bg-body text-text-main text-sm rounded px-2 py-1 outline-none border border-primary min-w-0"
                                         autoFocus
                                         onClick={(e) => e.stopPropagation()}
                                     />
                                 ) : (
-                                    <span className="flex-1 truncate text-sm">{getSessionTitle(session)}</span>
+                                    <span className="flex-1 truncate text-sm pl-2">{getSessionTitle(session)}</span>
                                 )}
 
-                                {/* Hover Actions */}
                                 {editingSessionId !== session.id && (
-                                    <div className={`flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 bg-[#050509]/80 backdrop-blur shadow-sm rounded-lg p-0.5 border border-white/10`}>
+                                    <div className={`flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 bg-bg-elevated shadow-sm rounded-md p-0.5 border border-border-secondary`}>
                                         <button
                                             onClick={(e) => handleRename(session.id, session.name, e)}
-                                            className="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-white/10 rounded-md transition-colors"
+                                            className="p-1.5 text-text-tertiary hover:text-primary hover:bg-black/5 rounded transition-colors"
                                             title="重命名"
                                         >
                                             <Edit2 className="w-3 h-3" />
                                         </button>
                                         <button
                                             onClick={(e) => handleDelete(session.id, e)}
-                                            className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-white/10 rounded-md transition-colors"
+                                            className="p-1.5 text-text-tertiary hover:text-error hover:bg-black/5 rounded transition-colors"
                                             title="删除"
                                         >
                                             <Trash2 className="w-3 h-3" />
@@ -182,17 +181,17 @@ const SessionSidebar = forwardRef(function SessionSidebar(
                 </div>
             </div>
 
-            <div className="p-4 border-t border-white/5">
-                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition">
+            <div className="p-4 border-t border-border-split">
+                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition">
                     <div className="relative">
-                        <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-slate-400">
+                        <div className="w-9 h-9 rounded-full bg-bg-elevated border border-border-secondary flex items-center justify-center text-text-tertiary">
                             <User className="w-5 h-5" />
                         </div>
-                        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#0B0E14]"></div>
+                        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full border-2 border-bg-component"></div>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-sm font-medium text-slate-200">Dev User</span>
-                        <span className="text-[10px] text-blue-400/80">Premium Plan</span>
+                        <span className="text-sm font-medium text-text-main">Dev User</span>
+                        <span className="text-xs text-primary">Premium Plan</span>
                     </div>
                 </div>
             </div>

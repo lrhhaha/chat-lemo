@@ -25,11 +25,6 @@ interface MessageBubbleProps {
 }
 
 export function MessageBubble({ message, index }: MessageBubbleProps) {
-  // Styles from demo.html
-  // User: max-w-2xl bg-[#1E293B] border border-white/10 rounded-2xl rounded-tr-none p-4 text-slate-100 leading-relaxed shadow-lg
-  // AI: bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-4 text-slate-300
-  // Avatar styles...
-
   const messageType = message.getType?.() || (message as any)._getType?.()
   const isUser = messageType === 'human'
 
@@ -71,16 +66,16 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
       style={{ animationDelay: `${index * 0.05}s` }}
     >
       {!isUser && (
-        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
-           <Bot className="text-white w-4 h-4" />
+        <div className="w-10 h-10 rounded-lg bg-bg-component border border-border-secondary flex items-center justify-center shadow-sm flex-shrink-0">
+           <Bot className="text-primary w-5 h-5" />
         </div>
       )}
 
       {/* Message Content Bubble */}
       <div className={`
         ${isUser 
-            ? 'max-w-2xl bg-[#1E293B] border border-white/10 rounded-2xl rounded-tr-none p-4 text-slate-100 leading-relaxed shadow-lg' 
-            : 'flex-1 bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-4 text-slate-300'
+            ? 'max-w-2xl bg-primary text-white rounded-xl rounded-tr-sm p-4 shadow-sm' 
+            : 'flex-1 bg-bg-component border border-border-secondary rounded-xl rounded-tl-sm p-4 text-text-main shadow-sm'
         }
       `}>
 
@@ -93,7 +88,7 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
                  key={idx}
                  src={url}
                  alt={`Image ${idx + 1}`}
-                 className="max-w-xs max-h-64 rounded-lg object-cover border border-white/10"
+                 className="max-w-xs max-h-64 rounded-lg object-cover border border-border-secondary"
                  onError={(e) => {
                    console.error('图片加载失败:', url.substring(0, 100))
                    e.currentTarget.style.display = 'none'
@@ -112,26 +107,25 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
 
          {/* 渲染文本内容 */}
          {messageContent && (
-           <div className={`text-[15px] leading-relaxed ${isUser ? 'text-slate-100' : 'text-slate-300'}`}>
+           <div className={`text-[15px] leading-relaxed ${isUser ? 'text-white' : 'text-text-main'}`}>
               <MarkdownRenderer content={messageContent} />
            </div>
          )}
 
          {/* If streaming cursor */}
          {message.isStreaming && (
-             <span className="inline-block w-1.5 h-4 bg-cyan-400 ml-1 align-middle animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]"></span>
+             <span className="inline-block w-1.5 h-4 bg-primary ml-1 align-middle animate-pulse"></span>
          )}
          
 
       </div>
 
       {isUser && (
-        <div className="ml-0 w-10 h-10 rounded-full bg-slate-700 overflow-hidden flex-shrink-0 border border-white/10 shadow-lg">
+        <div className="ml-0 w-10 h-10 rounded-full bg-bg-component overflow-hidden flex-shrink-0 border border-border-secondary shadow-sm">
             {/* Fallback avatar or icon */}
-            <div className="w-full h-full flex items-center justify-center text-slate-400">
+            <div className="w-full h-full flex items-center justify-center text-text-tertiary">
                 <User className="w-5 h-5" />
             </div>
-            {/* Use img if available */}
         </div>
       )}
     </div>

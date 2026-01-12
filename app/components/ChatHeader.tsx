@@ -24,15 +24,15 @@ export function ChatHeader() {
       <div className='flex items-center gap-3'></div>
 
       {/* 右侧：功能图标 */}
-      <div className='flex gap-5 text-slate-400 text-sm items-center'>
+      <div className='flex gap-5 text-text-tertiary text-sm items-center'>
         <button
-          className='hover:text-white transition p-2 rounded-lg hover:bg-white/5'
+          className='hover:text-text-main transition p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5'
           title='通知'
         >
           <Bell className='w-4 h-4' />
         </button>
         <button
-          className='hover:text-white transition p-2 rounded-lg hover:bg-white/5'
+          className='hover:text-text-main transition p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5'
           title='分支'
         >
           <GitBranch className='w-4 h-4' />

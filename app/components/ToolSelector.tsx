@@ -57,8 +57,8 @@ export default function ToolSelector({
           transition-all duration-200
           ${
             selectedTools.length > 0
-              ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
+              ? 'bg-primary text-white shadow-sm'
+              : 'text-text-secondary hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
           }
         `}
         title="选择工具"
@@ -89,19 +89,19 @@ export default function ToolSelector({
         <div
           className="
             absolute bottom-full left-0 mb-2 w-72
-            bg-slate-900/95 backdrop-blur-xl
-            border border-white/10
-            rounded-xl shadow-2xl
+            bg-bg-elevated backdrop-blur-xl
+            border border-border-secondary
+            rounded-xl shadow-elevated
             overflow-hidden
             animate-in slide-in-from-bottom-2 duration-200
           "
         >
           {/* 标题 */}
-          <div className="px-4 py-3 border-b border-white/10">
-            <h3 className="text-sm font-semibold text-white">
+          <div className="px-4 py-3 border-b border-border-secondary">
+            <h3 className="text-sm font-semibold text-text-main">
               选择工具
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-text-secondary mt-1">
               点击选择或取消选择工具
             </p>
           </div>
@@ -118,8 +118,8 @@ export default function ToolSelector({
                   className={`
                     w-full px-4 py-3 text-left
                     transition-colors duration-150
-                    hover:bg-white/5
-                    ${isSelected ? 'bg-blue-500/20' : ''}
+                    hover:bg-black/5 dark:hover:bg-white/5
+                    ${isSelected ? 'bg-primary/10' : ''}
                   `}
                 >
                   <div className="flex items-start gap-3">
@@ -131,8 +131,8 @@ export default function ToolSelector({
                         transition-all duration-200
                         ${
                           isSelected
-                            ? 'bg-blue-600 border-blue-600'
-                            : 'border-slate-600'
+                            ? 'bg-primary border-primary'
+                            : 'border-text-tertiary'
                         }
                       `}
                     >
@@ -162,15 +162,15 @@ export default function ToolSelector({
                             text-sm font-medium
                             ${
                               isSelected
-                                ? 'text-blue-400'
-                                : 'text-white'
+                                ? 'text-primary'
+                                : 'text-text-main'
                             }
                           `}
                         >
                           {tool.name}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                      <p className="text-xs text-text-secondary mt-1 line-clamp-2">
                         {tool.description}
                       </p>
                     </div>
@@ -182,13 +182,13 @@ export default function ToolSelector({
 
           {/* 底部操作 */}
           {selectedTools.length > 0 && (
-            <div className="px-4 py-3 border-t border-white/10 bg-slate-800/50">
+            <div className="px-4 py-3 border-t border-border-secondary bg-bg-component/50">
               <button
                 type="button"
                 onClick={() => {
                   selectedTools.forEach((toolId) => onToolToggle(toolId));
                 }}
-                className="text-xs text-blue-400 hover:underline"
+                className="text-xs text-primary hover:underline"
               >
                 清除全部选择
               </button>
