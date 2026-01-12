@@ -6,16 +6,13 @@ import {
   END
 } from '@langchain/langgraph';
 import { HumanMessage, AIMessage } from '@langchain/core/messages';
-import { SqliteSaver } from '@langchain/langgraph-checkpoint-sqlite';
+import { SupabaseSaver } from '@skroyc/langgraph-supabase-checkpointer';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { ToolNode } from '@langchain/langgraph/prebuilt';
 import path from 'path';
-import Database from 'better-sqlite3';
 import { createModel } from './utils/models';
 import { createLangChainTools } from './utils/tools';
-
-// 创建数据库
-const dbPath = path.resolve(process.cwd(), 'chat_history.db');
-export const db = new Database(dbPath);
+import { supabase } from '../database/supabase';
 
 // 全局缓存：存储不同配置的 workflow
 const workflowCache = new Map<string, ReturnType<typeof createWorkflow>>();
@@ -94,16 +91,21 @@ async function createWorkflow(modelId?: string, toolIds?: string[]) {
 }
 
 // 异步初始化检查点保存器
-let checkpointer: SqliteSaver;
+let checkpointer: SupabaseSaver;
 
-export const getCheckpointer = () => {
+const getCheckpointer = (client?: SupabaseClient, userId?: string) => {
+  if (client) {
+    return new SupabaseSaver(client, undefined, userId);
+  }
+
   if (!checkpointer) {
-    // 创建 SQLite 检查点保存器
+    // 创建 Supabase 检查点保存器
+    console.log('初始化 SupabaseSaver');
     try {
-      checkpointer = new SqliteSaver(db);
-      console.log('SqliteSaver 初始化成功');
+      checkpointer = new SupabaseSaver(supabase);
+      console.log('SupabaseSaver 初始化成功');
     } catch (error) {
-      console.error('SqliteSaver 初始化失败:', error);
+      console.error('SupabaseSaver 初始化失败:', error);
       throw error;
     }
   }
@@ -116,11 +118,18 @@ export const getCheckpointer = () => {
  * @param toolIds 工具 ID 列表（可选）
  * @returns 编译后的 LangGraph 应用
  */
-export const getApp = async (modelId?: string, toolIds?: string[]) => {
+export const getApp = async (
+  modelId?: string, 
+  toolIds?: string[],
+  client?: SupabaseClient,
+  userId?: string
+) => {
   // 初始化 checkpointer
   if (!checkpointer) {
     getCheckpointer();
   }
+
+  const checkpointerInstance = getCheckpointer(client, userId);
 
   // 生成缓存 key
   const cacheKey = `${modelId || 'default'}-${(toolIds || []).sort().join(',')}`;
@@ -134,7 +143,7 @@ export const getApp = async (modelId?: string, toolIds?: string[]) => {
   // 创建新的 workflow
   console.log('创建新的 workflow:', cacheKey);
   const workflow = await createWorkflow(modelId, toolIds);
-  const app = workflow.compile({ checkpointer });
+  const app = workflow.compile({ checkpointer: checkpointerInstance });
 
   // 缓存 workflow（限制缓存大小）
   if (workflowCache.size > 10) {
