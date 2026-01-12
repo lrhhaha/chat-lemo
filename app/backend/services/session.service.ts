@@ -1,8 +1,8 @@
 import {
   getAllSessions,
   createSession as dbCreateSession,
-  // deleteSession as dbDeleteSession,
-  // updateSessionName as dbUpdateSessionName,
+  deleteSession as dbDeleteSession,
+  updateSessionName as dbUpdateSessionName,
 } from '@/app/backend/database/sessions';
 import { randomUUID } from 'crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -57,23 +57,23 @@ export class SessionService {
    * 删除会话
    * 注意：由于 RLS 策略，用户只能删除自己的会话
    */
-  // async deleteSession(input: DeleteSessionInput): Promise<void> {
-  //   if (!input.id) {
-  //     throw new Error('缺少 id');
-  //   }
-  //   await dbDeleteSession(input.id);
-  // }
+  async deleteSession(input: DeleteSessionInput, client?: SupabaseClient): Promise<void> {
+    if (!input.id) {
+      throw new Error('缺少 id');
+    }
+    await dbDeleteSession(input.id, client);
+  }
 
   /**
    * 更新会话名称
    * 注意：由于 RLS 策略，用户只能更新自己的会话
    */
-  // async updateSessionName(input: UpdateSessionInput): Promise<void> {
-  //   if (!input.id || !input.name) {
-  //     throw new Error('缺少参数');
-  //   }
-  //   await dbUpdateSessionName(input.id, input.name);
-  // }
+  async updateSessionName(input: UpdateSessionInput, client?: SupabaseClient): Promise<void> {
+    if (!input.id || !input.name) {
+      throw new Error('缺少参数');
+    }
+    await dbUpdateSessionName(input.id, input.name, client);
+  }
 }
 
 // 导出单例实例

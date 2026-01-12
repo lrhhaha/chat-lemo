@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Session 数据类型
@@ -11,6 +11,13 @@ export interface SessionRow {
   user_id?: string; // 用户ID
 }
 
+/**
+ * 创建新会话
+ * @param id 会话ID
+ * @param name 会话名称
+ * @param userId 用户ID
+ * @param client Supabase 客户端（可选，如果不提供则使用默认客户端）
+ */
 export async function createSession(
   id: string,
   name: string,
@@ -31,8 +38,11 @@ export async function createSession(
   }
 }
 
+/**
+ * 获取所有会话列表
+ * @param client Supabase 客户端（可选，如果不提供则使用默认客户端）
+ */
 export async function getAllSessions(client?: SupabaseClient): Promise<SessionRow[]> {
-  // 传入supabase客户端是为了使用携带auth认证的客户端，以便通过RLS策略
   const db = client || supabase;
   const { data, error } = await db
     .from('sessions')
@@ -44,4 +54,34 @@ export async function getAllSessions(client?: SupabaseClient): Promise<SessionRo
   }
 
   return data || [];
+}
+
+/**
+ * 更新会话名称
+ */
+export async function updateSessionName(id: string, name: string, client?: SupabaseClient): Promise<void> {
+  const db = client || supabase;
+  const { error } = await db
+    .from('sessions')
+    .update({ name })
+    .eq('id', id);
+
+  if (error) {
+    throw new Error(`更新会话名称失败: ${error.message}`);
+  }
+}
+
+/**
+ * 删除会话
+ */
+export async function deleteSession(id: string, client?: SupabaseClient): Promise<void> {
+  const db = client || supabase;
+  const { error } = await db
+    .from('sessions')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    throw new Error(`删除会话失败: ${error.message}`);
+  }
 }
