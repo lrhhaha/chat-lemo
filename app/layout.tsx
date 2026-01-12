@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: "Chat application powered by LangGraph",
 };
 
+import { AuthProvider } from "./contexts/AuthContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -14,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className="bg-[#050509] text-slate-200 antialiased selection:bg-blue-500/30 overflow-hidden">
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

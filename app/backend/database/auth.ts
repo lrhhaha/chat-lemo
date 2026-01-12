@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { SupabaseClient } from '@supabase/supabase-js';
 
 export function signUpWithEmail(
   email: string,
@@ -30,17 +31,10 @@ export async function signInWithPassword(email: string, password: string) {
 }
 
 // 通过 access_token 执行登出
-export async function signOutWithToken(token: string) {
-  const { error } = await supabase.auth.setSession({
-    access_token: token,
-    refresh_token: '',
-  });
+export async function signOutWithToken(token: string,  client?: SupabaseClient) {
+  const db = client || supabase;
 
-  if (error) {
-    return { error };
-  }
-
-  return supabase.auth.signOut();
+  return db.auth.signOut();
 }
 
 // 通过 access_token 获取用户信息

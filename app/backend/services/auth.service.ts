@@ -1,4 +1,5 @@
 import { signUpWithEmail, exchangeCodeForSession, signInWithPassword, signOutWithToken, getUserByToken } from "../database/auth";
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export class AuthService {
   // 查询当前 token 对应的用户信息
@@ -17,8 +18,8 @@ export class AuthService {
   }
 
   // 使用 access_token 执行登出
-  async signOut(token: string) {
-    return signOutWithToken(token);
+  async signOut(token: string, client?: SupabaseClient) {
+    return signOutWithToken(token, client);
   }
 
   // 邮箱验证回调，交换 session

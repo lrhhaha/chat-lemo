@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authService } from '@/app/backend/services/auth.service';
+import { withAuth } from '@/app/backend/middleware/auth';
 
 /**
  * 用户登出 API
@@ -15,16 +16,16 @@ import { authService } from '@/app/backend/services/auth.service';
 
 const COOKIE_NAME = 'sb-access-token';
 
-export async function POST(request: NextRequest) {
+export const POST =  withAuth(async function(request: NextRequest, auth) {
   try {
     // 从 cookie 获取 access_token
     let token = request.cookies.get(COOKIE_NAME)?.value;
 
     // 如果有 token，执行登出
     if (token) {
-      const { error } = await authService.signOut(token);
+      const { error } = await authService.signOut(token, auth.client);
       if (error) {
-        console.error('登出错误:', error.message);
+        console.error('登出错误:', error);
         return NextResponse.json(
           { error: '登出失败' },
           { status: 400 }
@@ -48,4 +49,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+})
