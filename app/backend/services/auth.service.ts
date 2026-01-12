@@ -1,4 +1,4 @@
-import { signUpWithEmail, exchangeCodeForSession, signInWithPassword } from "../database/auth";
+import { signUpWithEmail, exchangeCodeForSession, signInWithPassword, signOutWithToken, getUserByToken } from "../database/auth";
 
 export class AuthService {
   // 查询当前 token 对应的用户信息
@@ -17,13 +17,18 @@ export class AuthService {
   }
 
   // 使用 access_token 执行登出
-  // async signOut(token: string) {
-  //   return signOutWithToken(token);
-  // }
+  async signOut(token: string) {
+    return signOutWithToken(token);
+  }
 
   // 邮箱验证回调，交换 session
   async exchangeCodeForSession(code: string) {
     return exchangeCodeForSession(code);
+  }
+
+  // 查询当前 token 对应的用户信息
+  async getUserByToken(token: string) {
+    return getUserByToken(token);
   }
 }
 

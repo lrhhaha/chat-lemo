@@ -28,3 +28,22 @@ export async function exchangeCodeForSession(code: string) {
 export async function signInWithPassword(email: string, password: string) {
   return supabase.auth.signInWithPassword({ email, password });
 }
+
+// 通过 access_token 执行登出
+export async function signOutWithToken(token: string) {
+  const { error } = await supabase.auth.setSession({
+    access_token: token,
+    refresh_token: '',
+  });
+
+  if (error) {
+    return { error };
+  }
+
+  return supabase.auth.signOut();
+}
+
+// 通过 access_token 获取用户信息
+export async function getUserByToken(token: string) {
+  return supabase.auth.getUser(token);
+}
