@@ -20,7 +20,7 @@ import { toolsConfig } from './backend/agent/config/tools.config'
 export default function ChatPage() {
   const chatInputRef = useRef<ChatInputHandle>(null)
 
-  const [currentModel, setCurrentModel] = useState('openai:qwen3-max')
+  const [currentModel, setCurrentModel] = useState('google:gemini-3-pro-preview')
 
   const availableModels = useMemo<Model[]>(() => [
     {
