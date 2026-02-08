@@ -1,4 +1,4 @@
-import { signUpWithEmail, exchangeCodeForSession, signInWithPassword, signOutWithToken, getUserByToken } from "../database/auth";
+import { signUpWithEmail, exchangeCodeForSession, signInWithPassword, signOutWithToken, getUserByToken, signInWithOAuth } from "../database/auth";
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export class AuthService {
@@ -25,6 +25,11 @@ export class AuthService {
   // 邮箱验证回调，交换 session
   async exchangeCodeForSession(code: string) {
     return exchangeCodeForSession(code);
+  }
+
+  // OAuth 登录
+  async signInWithOAuth(provider: 'github') {
+    return signInWithOAuth(provider);
   }
 
   // 查询当前 token 对应的用户信息

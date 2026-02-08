@@ -27,6 +27,7 @@
     "@modelcontextprotocol/server-filesystem": "^2025.8.21",
     "@modelcontextprotocol/server-sequential-thinking": "^2025.7.1",
     "@skroyc/langgraph-supabase-checkpointer": "^2.2.1",
+    "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.90.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/uuid": "^11.0.0",

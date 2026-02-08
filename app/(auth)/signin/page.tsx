@@ -3,8 +3,8 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import Link from 'next/link'
 import { useRouter} from 'next/navigation'
-import { email } from 'zod'
-import { PassThrough } from 'stream'
+import { Github } from 'lucide-react'
+import { createClient } from '@/app/backend/utils/supabase/client'
 
 export default function SigninPage() {
   const router = useRouter();
@@ -19,6 +19,20 @@ export default function SigninPage() {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleGitHubSignIn = async () => {
+    try {
+      const supabase = createClient()
+      await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback`,
+        },
+      })
+    } catch (error) {
+      console.error('GitHub login failed:', error)
+    }
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -97,6 +111,21 @@ export default function SigninPage() {
               登录
             </button>
           </form>
+
+          <div className="my-6 flex items-center gap-4">
+            <div className="h-px flex-1 bg-white/10"></div>
+            <span className="text-xs text-white/40">OR</span>
+            <div className="h-px flex-1 bg-white/10"></div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGitHubSignIn}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            <Github className="h-5 w-5" />
+            使用 GitHub 登录
+          </button>
 
           <div className="mt-6 flex items-center justify-between text-xs text-white/60">
             <span>还没有账号？</span>

@@ -41,3 +41,13 @@ export async function signOutWithToken(token: string,  client?: SupabaseClient) 
 export async function getUserByToken(token: string) {
   return supabase.auth.getUser(token);
 }
+
+// OAuth 登录 (GitHub)
+export async function signInWithOAuth(provider: 'github') {
+  return supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${window.location.origin}/api/auth/callback`,
+    },
+  });
+}
