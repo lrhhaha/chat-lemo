@@ -26,7 +26,7 @@ export class SessionService {
    */
   async getAllSessions(client?: SupabaseClient): Promise<Session[]> {
     const sessions = await getAllSessions(client);
-    console.log('get session:', sessions)
+    // console.log('get session:', sessions)
     // 转换数据库格式到应用格式
     return sessions.map(session => ({
       id: session.id,

@@ -17,11 +17,16 @@ export async function GET(request: Request) {
 
       if (isLocalEnv) {
         // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-        response = NextResponse.redirect(`${origin}${next}`)
+
+        // response = NextResponse.redirect(`${origin}${next}`)
+        response = NextResponse.redirect(`https://chat-lemo.vercel.app#haha=1`)
+
       } else if (forwardedHost) {
-        response = NextResponse.redirect(`https://${forwardedHost}${next}`)
+        // response = NextResponse.redirect(`https://${forwardedHost}${next}`)
+        response = NextResponse.redirect(`https://chat-lemo.vercel.app#haha=2`)
       } else {
-        response = NextResponse.redirect(`${origin}${next}`)
+        // response = NextResponse.redirect(`${origin}${next}`)
+        response = NextResponse.redirect(`https://chat-lemo.vercel.app#haha=3`)
       }
 
       // Explicitly set the cookie
