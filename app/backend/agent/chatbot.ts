@@ -54,12 +54,21 @@ async function createWorkflow(modelId?: string, toolIds?: string[]) {
         
         if (!hasArtifactSystemPrompt) {
           const artifactSystemPrompt = new SystemMessage(
-            `你现在处于 Artifact 模式。当用户要求你创建、编写、修改 UI 组件或代码时，你必须使用特定的 Markdown 代码块格式包裹你的代码，这样系统才能渲染预览。格式要求如下：\n` +
+            `你现在处于 Artifact 模式。当用户要求你创建、编写、修改 UI 组件或代码时，你必须使用特定的 Markdown 代码块格式包裹你的代码，这样系统才能渲染预览。\n\n` +
+            `【极其重要的技术限制，必须严格遵守】：\n` +
+            `1. **可用库限制**：你只能使用 React (通过 import React, { useState... } from 'react') 和 Tailwind CSS。\n` +
+            `2. **严禁第三方库**：绝对不能使用、不能导入任何其他的第三方 npm 包（例如 lucide-react, framer-motion, recharts, @radix-ui 等）。系统环境中没有安装这些库，一旦导入会导致代码直接崩溃报错！\n` +
+            `3. **图标处理**：如果你需要使用图标，请直接在代码中手写内联的 SVG 代码，绝对不要尝试从类似 'lucide-react' 或 '@heroicons/react' 中导入。\n` +
+            `4. **样式处理**：只能使用 Tailwind CSS 的 className 进行样式控制，不要使用 styled-components 或 CSS modules。\n\n` +
+            `【格式要求】：\n` +
             `\`\`\`tsx artifact title="组件名称"\n` +
-            `// 你的 React 代码写在这里\n` +
-            `// 请确保默认导出组件 (export default function...)\n` +
+            `import React, { useState } from 'react';\n\n` +
+            `export default function MyComponent() {\n` +
+            `  // 你的 React 代码写在这里\n` +
+            `  return <div className="p-4 bg-white text-black">Hello</div>;\n` +
+            `}\n` +
             `\`\`\`\n` +
-            `注意：只有针对完整的UI组件代码使用此格式。如果是解释性文字或零散代码片段，继续使用正常的 markdown。如果需要使用图标，你可以假设系统已经内置了 lucide-react，并且 Tailwind CSS 可用。`
+            `注意：只有针对完整的 UI 组件代码使用此格式。如果是解释性文字或零散代码片段，继续使用正常的 markdown。`
           );
           // 将 SystemMessage 插入到消息数组的最前面
           messagesToInvoke = [artifactSystemPrompt, ...messagesToInvoke];
