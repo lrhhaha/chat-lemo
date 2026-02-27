@@ -11,11 +11,11 @@ export type { ToolConfig };
 
 // 基础工具配置
 export const toolsConfig: Record<string, ToolConfig<any>> = {
+  artifact_preview: artifactPreviewTool,
   calculator: calculatorTool,
   weather: weatherTool,
   current_time: currentTimeTool,
-  search: searchTool,
-  artifact_preview: artifactPreviewTool,
+  // search: searchTool,
   // leetCode_mcp: leetCodeMCP
 };
 

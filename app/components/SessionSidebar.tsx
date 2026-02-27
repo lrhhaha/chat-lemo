@@ -107,7 +107,7 @@ const SessionSidebar = forwardRef(function SessionSidebar(
                 <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center shadow-md shadow-primary/20">
                     <Zap className="text-white w-4 h-4" />
                 </div>
-                <span className="font-bold text-lg tracking-tight text-text-main">ChatAPP<span className="text-primary text-xs align-top ml-1">AI</span></span>
+                <span className="font-bold text-lg tracking-tight text-text-main">chat-lemo<span className="text-primary text-xs align-top ml-1">AI</span></span>
             </div>
 
             <div className="px-4 mb-6">

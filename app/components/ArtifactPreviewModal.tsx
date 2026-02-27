@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Play } from 'lucide-react';
 import CodePreview from './CodePreview';
 
@@ -12,6 +13,11 @@ interface ArtifactPreviewModalProps {
 }
 
 export function ArtifactPreviewModal({ isOpen, onClose, initialCode, title = 'Component' }: ArtifactPreviewModalProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [code, setCode] = useState(initialCode);
 
   useEffect(() => {
@@ -26,11 +32,11 @@ export function ArtifactPreviewModal({ isOpen, onClose, initialCode, title = 'Co
     };
   }, [isOpen, initialCode]);
 
-  if (!isOpen) return null;
+  if (!mounted || !isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-      <div className="w-[95vw] h-[90vh] max-w-7xl bg-gray-50 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-zoom-in">
+  return createPortal(
+    <div className="fixed inset-y-0 right-0 left-0 md:left-64 z-[100] flex bg-black/20 backdrop-blur-sm animate-fade-in">
+      <div className="w-full h-full bg-gray-50 shadow-[-10px_0_30px_rgba(0,0,0,0.1)] flex flex-col overflow-hidden animate-slide-in-right">
         {/* Header */}
         <header className="bg-white border-b px-6 py-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
@@ -53,7 +59,7 @@ export function ArtifactPreviewModal({ isOpen, onClose, initialCode, title = 'Co
         {/* Content */}
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
           {/* Editor */}
-          <div className="flex-1 flex flex-col border-b lg:border-b-0 lg:border-r border-gray-200 min-h-[40vh] lg:min-h-0">
+          <div className="w-full lg:w-1/3 flex flex-col border-b lg:border-b-0 lg:border-r border-gray-200 min-h-[40vh] lg:min-h-0 shrink-0">
             <div className="bg-gray-100 px-4 py-2 border-b text-xs font-medium text-gray-500 uppercase tracking-wider flex justify-between items-center">
               <span>Code Editor</span>
               <span className="text-[10px] bg-gray-200 px-2 py-0.5 rounded text-gray-600">Editable</span>
@@ -68,7 +74,7 @@ export function ArtifactPreviewModal({ isOpen, onClose, initialCode, title = 'Co
           </div>
 
           {/* Preview */}
-          <div className="flex-1 flex flex-col bg-gray-50 p-4 lg:p-6 overflow-hidden">
+          <div className="flex-1 flex flex-col bg-gray-50 p-2 lg:p-4 overflow-hidden min-w-0">
             <div className="h-full flex flex-col">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Preview Result</span>
@@ -80,6 +86,7 @@ export function ArtifactPreviewModal({ isOpen, onClose, initialCode, title = 'Co
           </div>
         </main>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
