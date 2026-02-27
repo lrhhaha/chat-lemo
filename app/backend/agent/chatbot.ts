@@ -5,7 +5,7 @@ import {
   START,
   END
 } from '@langchain/langgraph';
-import { HumanMessage, AIMessage } from '@langchain/core/messages';
+import { HumanMessage, AIMessage, SystemMessage } from '@langchain/core/messages';
 import { SupabaseSaver } from '@skroyc/langgraph-supabase-checkpointer';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { ToolNode } from '@langchain/langgraph/prebuilt';
@@ -25,11 +25,16 @@ const workflowCache = new Map<string, ReturnType<typeof createWorkflow>>();
 async function createWorkflow(modelId?: string, toolIds?: string[]) {
   console.log('创建 workflow - 模型:', modelId, '工具:', toolIds);
 
+  // 处理 artifact_preview 这个虚拟工具
+  const isArtifactMode = toolIds?.includes('artifact_preview');
+  // 从真正传给 LLM 的工具列表中剔除 artifact_preview
+  const actualToolIds = toolIds?.filter(id => id !== 'artifact_preview');
+
   // 创建模型实例
   const model = createModel(modelId);
 
   // 创建工具实例（toolIds为工具名称）
-  const tools = await createLangChainTools(toolIds);
+  const tools = await createLangChainTools(actualToolIds);
   // console.log('tools!!!!!!1', tools.map(it => it.name))
   // 绑定工具到模型
   const modelWithTools = tools.length > 0 ? model.bindTools(tools) : model;
@@ -38,8 +43,31 @@ async function createWorkflow(modelId?: string, toolIds?: string[]) {
   async function chatbotNode(state: typeof MessagesAnnotation.State) {
 
     try {
+      let messagesToInvoke = [...state.messages];
+      
+      // 如果启用了 Artifact 模式，动态注入 System Prompt 到消息历史开头
+      if (isArtifactMode) {
+        // 检查是否已经包含了这个 system prompt 避免重复注入
+        const hasArtifactSystemPrompt = messagesToInvoke.some(
+          msg => msg._getType() === 'system' && typeof msg.content === 'string' && msg.content.includes('Artifact 模式')
+        );
+        
+        if (!hasArtifactSystemPrompt) {
+          const artifactSystemPrompt = new SystemMessage(
+            `你现在处于 Artifact 模式。当用户要求你创建、编写、修改 UI 组件或代码时，你必须使用特定的 Markdown 代码块格式包裹你的代码，这样系统才能渲染预览。格式要求如下：\n` +
+            `\`\`\`tsx artifact title="组件名称"\n` +
+            `// 你的 React 代码写在这里\n` +
+            `// 请确保默认导出组件 (export default function...)\n` +
+            `\`\`\`\n` +
+            `注意：只有针对完整的UI组件代码使用此格式。如果是解释性文字或零散代码片段，继续使用正常的 markdown。如果需要使用图标，你可以假设系统已经内置了 lucide-react，并且 Tailwind CSS 可用。`
+          );
+          // 将 SystemMessage 插入到消息数组的最前面
+          messagesToInvoke = [artifactSystemPrompt, ...messagesToInvoke];
+        }
+      }
+
       // 此处会进行流式输出，即整个await期间会一直进行流式输出
-      const response = await modelWithTools.invoke(state.messages);
+      const response = await modelWithTools.invoke(messagesToInvoke);
       console.log('模型响应成功，类型:', response);
       return { messages: [response] };
     } catch (error) {
@@ -156,7 +184,6 @@ export const getApp = async (
 
   return app;
 };
-
 
 export {
   checkpointer,

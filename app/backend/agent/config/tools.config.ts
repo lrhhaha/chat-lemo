@@ -3,6 +3,7 @@ import { calculatorTool } from '../tools/calculator.tool';
 import { weatherTool } from '../tools/weather.tool';
 import { currentTimeTool } from '../tools/current-time.tool';
 import { searchTool } from '../tools/search.tool';
+import { artifactPreviewTool } from "../tools/artifact-preview.tool";
 import leetCodeMCP from '../tools/mcp-leetcode.tool';
 
 // 重新导出 ToolConfig 类型，保持向后兼容
@@ -14,6 +15,7 @@ export const toolsConfig: Record<string, ToolConfig<any>> = {
   weather: weatherTool,
   current_time: currentTimeTool,
   search: searchTool,
+  artifact_preview: artifactPreviewTool,
   // leetCode_mcp: leetCodeMCP
 };
 
@@ -35,15 +37,15 @@ export interface EnvironmentConfig {
 
 export const environmentConfig: EnvironmentConfig = {
   development: {
-    enabledTools: ['calculator', 'weather', 'current_time', 'search'],
+    enabledTools: ['calculator', 'weather', 'current_time', 'search', 'artifact_preview'],
     debugMode: true,
   },
   production: {
-    enabledTools: ['calculator', 'weather', 'current_time', 'search'],
+    enabledTools: ['calculator', 'weather', 'current_time', 'search', 'artifact_preview'],
     debugMode: false,
   },
   test: {
-    enabledTools: ['calculator', 'current_time'],
+    enabledTools: ['calculator', 'current_time', 'artifact_preview'],
     debugMode: true,
   },
 };
