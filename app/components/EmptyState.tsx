@@ -21,13 +21,12 @@ export function EmptyState({ onAction }: EmptyStateProps) {
       </div>
 
       <h1 className="text-3xl md:text-4xl font-semibold mb-4 tracking-tight text-text-main">
-        欢迎使用 <span className="text-primary">LangGraph</span> 智能助手
+        欢迎使用 <span className="text-primary">chat-lemo</span> 智能助手
       </h1>
       <p className="text-text-secondary max-w-lg text-lg mb-12 leading-relaxed">
         基于下一代 AI 模型，为您提供
-        <span className="text-text-main font-medium mx-1">代码生成</span>、
-        <span className="text-text-main font-medium mx-1">架构分析</span>与
-        <span className="text-text-main font-medium mx-1">智能调试</span>
+        <span className="text-text-main font-medium mx-1">智能问答</span>、
+        <span className="text-text-main font-medium mx-1">代码生成</span>
         服务。
       </p>
 
@@ -46,7 +45,7 @@ export function EmptyState({ onAction }: EmptyStateProps) {
         </button>
 
         <button 
-           onClick={() => onAction?.('分析这个 React 组件的性能瓶颈')}
+           onClick={() => onAction?.('如何对一个React组件进行性能优化')}
            className="group bg-bg-component border border-border-secondary hover:border-primary p-6 rounded-lg flex items-start text-left gap-4 transition-all hover:shadow-card cursor-pointer"
         >
           <div className="w-12 h-12 rounded-lg bg-primary-bg flex items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
@@ -54,7 +53,7 @@ export function EmptyState({ onAction }: EmptyStateProps) {
           </div>
           <div>
             <div className="text-text-main font-medium text-base mb-1 group-hover:text-primary transition-colors">React 性能优化</div>
-            <div className="text-text-secondary text-sm leading-relaxed">智能分析组件渲染逻辑，提供 useMemo 和 useCallback 优化建议。</div>
+            <div className="text-text-secondary text-sm leading-relaxed">理解React组件渲染逻辑，提供可落地的优化建议。</div>
           </div>
         </button>
       </div>
